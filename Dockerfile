@@ -1,12 +1,11 @@
 FROM alpine
 
-ARG compose_version=1.6.2
+ARG compose_version=1.8.0
 
-RUN apk update &&\
-    apk add python py-pip git &&\
+RUN apk --no-cache add python py-pip git &&\
     git clone --branch ${compose_version} https://github.com/docker/compose.git /code/compose &&\
     cd /code/compose &&\
-    pip install -r requirements.txt -r requirements-dev.txt pyinstaller==3.1.1 &&\
+    pip --no-cache-dir install -r requirements.txt -r requirements-dev.txt pyinstaller==3.1.1 &&\
     git rev-parse --short HEAD > compose/GITSHA &&\
     ln -s /lib /lib64 && ln -s /lib/libc.musl-x86_64.so.1 ldd && ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
     pyinstaller docker-compose.spec &&\
@@ -18,4 +17,3 @@ RUN apk update &&\
     chmod +x /usr/local/bin/docker-compose
 
 ENTRYPOINT ["/usr/local/bin/docker-compose"]
-
